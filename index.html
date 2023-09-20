@@ -93,7 +93,6 @@ span.descriptor {
 	width:400px;
 	text-align:center;
 	display:inline;
-	margin-left:15px;
 }
 div.user_info, div.account_info {
 	text-align:left;
@@ -128,8 +127,16 @@ p.warning {
 a {
  color:yellow;
 }
+.descriptor {
+	margin-left:15px;
+}
+
+button.descriptor {
+	cursor:pointer;
+}
+
 code.descriptor {
-    margin-left:15px;
+    
     display: inline;
     color:#8f8;
 }
@@ -139,19 +146,132 @@ code.descriptor {
 <script type="text/javascript" src="js/jsrender.js"> </script>
 
 <script type="text/javascript">
+
+function login_ctfd(data, url, username, password) {
+	var nonce = data.split('<input id="nonce" name="nonce" type="hidden" value="')[1].split('">')[0];
+	request_data = {
+		"name": username,
+		"password": password,
+		"_submit": "Submit",
+		"nonce": nonce
+		
+	}
+	$.ajax({
+		type: "POST",
+		url: url,
+		data: request_data,
+		xhrFields: {
+      		withCredentials: true
+   		},
+		success: function(data) {
+			console.log(data)
+		},
+		error: function(data) {
+			console.log("Failure");
+			console.log(data);
+		}
+
+	})
+}
+
+function login_guacamole(data, url, username, password) {
+	var nonce = data.split('<input id="nonce" name="nonce" type="hidden" value="')[1].split('">')[0];
+	request_data = {
+		"name": username,
+		"password": password,
+		"_submit": "Submit",
+		"nonce": nonce
+		
+	}
+	$.ajax({
+		type: "POST",
+		url: url,
+		data: request_data,
+		xhrFields: {
+      		withCredentials: true
+   		},
+		success: function(data) {
+			console.log(data)
+		},
+		error: function(data) {
+			console.log("Failure");
+			console.log(data);
+		}
+
+	})
+}
+
+function download_student_priv_key() {
+
+	var key_contents = localStorage.getItem("studentKey");
+	key_contents = JSON.parse(key_contents);
+	const file = new File([key_contents["privateKey"]], "student_private_key.pem", {
+		type: 'text/plain',
+	})
+  	const link = document.createElement('a')
+  	const url = URL.createObjectURL(file)
+
+  	link.href = url
+  	link.download = file.name
+  	document.body.appendChild(link)
+  	link.click()
+
+  	document.body.removeChild(link)
+  	window.URL.revokeObjectURL(url)
+}
+
+function dict_to_formdata(data) {
+	var form_data = new FormData();
+
+	for ( var key in data ) {
+		form_data.append(key, data[key]);
+	}
+	return form_data;
+}
+
+
+function auto_login_ctfd() {
+	var ctfd_url = "https://ctfd."+localStorage.getItem("StackFrontDomain")+"/login"
+	$.get(ctfd_url, function(page_source) {
+				login_ctfd(page_source, ctfd_url, "student", localStorage.getItem("StudentCTFdPassword"))
+			});
+}
+
+function auto_login_guacamole() {
+	var guac_url = "https://guacamole."+localStorage.getItem("StackFrontDomain")+"/api/tokens"
+	$.post(ctfd_url, function(page_source) {
+				login_ctfd(page_source, ctfd_url, "student", localStorage.getItem("StudentCTFdPassword"))
+			});
+}
+
 $(function() {
     if (window.location.search.indexOf("signed_uri") === -1) {
-        $("#dynamic_box").empty();
-        $("#dynamic_box").prepend($.templates("#no_creds").render({}));   
+		if(localStorage.getItem("StudentStackIdentifier") == null) {
+			$("#dynamic_box").empty();
+        	$("#dynamic_box").prepend($.templates("#no_creds").render({})); 
+		} else {
+			$("#dynamic_box").empty();
+            $("#dynamic_box").prepend($.templates("#user_info_template").render(localStorage));
+		}
+          
     } else {
         var signed_uri = window.location.search.split("signed_uri=")[1];
         var decoded_uri = atob(signed_uri)
         $.getJSON( decoded_uri, function(data) {
+			Object.entries(data).forEach(([key,value]) => {
+				if (typeof value === 'object') {
+					value = JSON.stringify(value);
+				}
+				localStorage.setItem(key, value);
+			});
             console.log(data);
-            $("#dynamic_box").empty();
-            $("#dynamic_box").prepend($.templates("#user_info_template").render(data));  
+			$("#dynamic_box").empty();
+            $("#dynamic_box").prepend($.templates("#user_info_template").render(data));
         });
     }
+	if(localStorage.getItem("StudentCTFdPassword") != null) {
+		auto_login_ctfd();
+	}
 })
 
 
@@ -162,20 +282,37 @@ $(function() {
 	<h3>Login Information</h3>
 		<p>
 			<span class="label">CTFd:</span>
-            <span class="descriptor">ctfd.{{:StackFrontDomain}}</span> 
+            <span class="descriptor">
+		<a href="https://ctfd.{{:StackFrontDomain}}/">
+	    	ctfd.{{:StackFrontDomain}}
+		</a>
+	    </span> 
+            <br />
+            <span class="label">CTFd Username:</span>
+            <code class="descriptor">student</code>
             <br />
             <span class="label">CTFd Password:</span>
             <code class="descriptor">{{:StudentCTFdPassword}}</code>
 		</p>
 		<p>
 			<span class="label">Guacamole (VNC/SSH):</span>
-            <span class="descriptor">guacamole.{{:StackFrontDomain}}</span>
+            <span class="descriptor">
+		<a target="_new" href="https://guacamole.{{:StackFrontDomain}}/#/client/U1NIAGMAZGVmYXVsdA?username=student&password={{:StudentGuacPassword}}">
+			Web Shell (SSH)
+		</a>
+		<a target="_new" href="https://guacamole.{{:StackFrontDomain}}/#/client/Vk5DAGMAZGVmYXVsdA?username=student&password={{:StudentGuacPassword}}">
+			VNC
+		</a>
+	    </span>
+            <br />
+            <span class="label">Guacamole Username:</span>
+            <code class="descriptor">student</code>
             <br />
             <span class="label">Guacamole Password:</span>
             <code class="descriptor">{{:StudentGuacPassword}}</code>
 		</p>
 		<p>
-			<span class="label">Student VM:</span>
+            <span class="label">Student VM (ssh tcp/22):</span>
             <span class="descriptor">vm.{{:StackFrontDomain}}</span>
             <br />
             <span class="label">Student VM Username:</span>
@@ -183,6 +320,9 @@ $(function() {
             <br />
             <span class="label">Student VM Password:</span>
             <code class="descriptor">{{:StudentVMPassword}}</code>
+			<br />
+			<span class="label">Student VM SSH Key:</span>
+			<button class="descriptor" onclick="javascript:download_student_priv_key()">Download Key</button>
 		</p>
 	</div>
 </script>
