@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student Panel</title>
+<link rel="icon" type="image/png" href="/img/insignia-small.png">
+<style type="text/css">
+
+html, body {
+	width:100%;
+	height:100%;
+	margin:0;
+	padding:0;
+	background-color:#1a1a1a;
+}
+
+div.outer {
+	width:1000px;
+	background-color:#000;
+	background-image:url('img/cyber_regimental_crest-web.png');
+	background-position:center;
+	background-attachment:fixed;
+	background-repeat: no-repeat;
+	margin:0px auto;
+	background-size:500px auto;
+	height:100%;
+	overflow:none;
+}
+div.content-background {
+    background: rgba(0,0,0, .75);
+    height:100%;
+    width:100%;
+    overflow:none;
+}
+
+div.content {
+	color:#fff;
+	padding:25px 50px;
+	text-align:center;
+    overflow:auto;
+
+}
+
+#dynamic_box {
+	font-size:1.2em;
+}
+#dynamic_box h3 {
+	text-align:center;
+}
+p.form_p {
+	text-align:center !important;
+	margin:0px auto !important;
+	
+}
+input.invisible {
+	background-color:transparent;
+	font-size:1em;
+	font-family:courier;
+	border:none;
+	color:#fff;
+	width:400px;
+}
+p.form_p button {
+	background-color: #1a1a1a;
+	color:#fff;
+	border:1px solid #ccc;
+	font-size:1.3em;
+	cursor:pointer;
+	padding:10px;
+	margin:10px;
+	border-radius: 5px;
+}
+
+
+
+div.user_info p, div.account_info p, div.login_instructions p {
+	padding:0px;
+	margin:5px;
+	text-align:left;
+}
+
+div.login_instructions ul {
+text-align:left;
+}
+span.label {
+	width:300px;
+	margin-left:131px;
+	display:inline-block;
+	text-align:right;
+	font-weight:bold;
+}
+span.descriptor {
+	width:400px;
+	text-align:center;
+	display:inline;
+	margin-left:15px;
+}
+div.user_info, div.account_info {
+	text-align:left;
+}
+
+div.error {
+	margin:10px 75px;		
+	text-align:center;
+}
+div.error h3 {
+	color:#f99;
+}
+
+.has_account_true, .account_disabled_false {
+	color:#8f8;
+}
+
+.has_account_false, .account_disabled_true {
+	color:#f88;
+}
+
+.no-close .ui-dialog-titlebar-close {
+  display: none;
+}
+
+p.warning {
+	padding-left:50px;
+	padding-right:50px;
+	color:#ff9;
+}
+
+a {
+ color:yellow;
+}
+code.descriptor {
+    margin-left:15px;
+    display: inline;
+    color:#8f8;
+}
+
+</style>
+<script type="text/javascript" src="js/jquery.js"> </script>
+<script type="text/javascript" src="js/jsrender.js"> </script>
+
+<script type="text/javascript">
+$(function() {
+    if (window.location.search.indexOf("signed_uri") === -1) {
+        $("#dynamic_box").empty();
+        $("#dynamic_box").prepend($.templates("#no_creds").render({}));   
+    } else {
+        var signed_uri = window.location.search.split("signed_uri=")[1];
+        var decoded_uri = atob(signed_uri)
+        $.getJSON( decoded_uri, function(data) {
+            console.log(data);
+            $("#dynamic_box").empty();
+            $("#dynamic_box").prepend($.templates("#user_info_template").render(data));  
+        });
+    }
+})
+
+
+
+</script>
+<script type="text/x-jsrender" id="user_info_template">
+	<div class="user_info">
+	<h3>Login Information</h3>
+		<p>
+			<span class="label">CTFd:</span>
+            <span class="descriptor">ctfd.{{:StackFrontDomain}}</span> 
+            <br />
+            <span class="label">CTFd Password:</span>
+            <code class="descriptor">{{:StudentCTFdPassword}}</code>
+		</p>
+		<p>
+			<span class="label">Guacamole (VNC/SSH):</span>
+            <span class="descriptor">guacamole.{{:StackFrontDomain}}</span>
+            <br />
+            <span class="label">Guacamole Password:</span>
+            <code class="descriptor">{{:StudentGuacPassword}}</code>
+		</p>
+		<p>
+			<span class="label">Student VM:</span>
+            <span class="descriptor">vm.{{:StackFrontDomain}}</span>
+            <br />
+            <span class="label">Student VM Username:</span>
+            <code class="descriptor">ubuntu</code>
+            <br />
+            <span class="label">Student VM Password:</span>
+            <code class="descriptor">{{:StudentVMPassword}}</code>
+		</p>
+	</div>
+</script>
+
+<script type="text/x-jsrender" id="no_creds">
+	<div class="error">
+	<h3>No Creds Found</h3>
+		<p>
+			You are trying to access this resource without the signed URL.
+            Please use the signed URL. If you do not have a signed URL,
+            please contact your administrator for more help.
+		</p>
+	</div>
+</script>
+
+
+<script type="text/x-jsrender" id="error_template">
+	<div class="error">
+	<h3>There was an error. </h3>
+
+			{{if errors}}
+			<p><strong>Error information:</strong> "{{:errors}}"</p>
+			{{/if}}
+
+		<p>
+			{{:error_text}}
+		</p>
+
+		<p>
+		</p>
+	</div>
+</script>
+
+
+</head>
+<body>
+	<div class="outer">
+    <div class="content-background">
+	<div class="content">
+		<h1>Cyber Assessment</h2>
+		<div id="dynamic_box"><center>Loading...</center></div>
+		<noscript>Sorry, you need javascript.</noscript>
+	</div>
+    </div>
+	</div>
+
+</body>
+</html>
