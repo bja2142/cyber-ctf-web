@@ -232,9 +232,12 @@ function dict_to_formdata(data) {
 
 function auto_login_ctfd() {
 	var ctfd_url = "https://ctfd."+localStorage.getItem("StackFrontDomain")+"/login"
-	$.get(ctfd_url, function(page_source) {
+	$.ajax({type:"GET", url:ctfd_url, xhrFields: {
+      withCredentials: true
+   },
+   success: function(page_source) {
 				login_ctfd(page_source, ctfd_url, "student", localStorage.getItem("StudentCTFdPassword"))
-			});
+			}});
 }
 
 function auto_login_guacamole() {
