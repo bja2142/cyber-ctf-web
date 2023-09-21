@@ -4,144 +4,8 @@
 <head>
 <title>Student Panel</title>
 <link rel="icon" type="image/png" href="/img/insignia-small.png">
-<style type="text/css">
+<link rel="stylesheet" href="css/style.css">
 
-html, body {
-	width:100%;
-	height:100%;
-	margin:0;
-	padding:0;
-	background-color:#1a1a1a;
-}
-
-div.outer {
-	width:1000px;
-	background-color:#000;
-	background-image:url('img/cyber_regimental_crest-web.png');
-	background-position:center;
-	background-attachment:fixed;
-	background-repeat: no-repeat;
-	margin:0px auto;
-	background-size:500px auto;
-	height:100%;
-	overflow:none;
-}
-div.content-background {
-    background: rgba(0,0,0, .75);
-    height:100%;
-    width:100%;
-    overflow:none;
-}
-
-div.content {
-	color:#fff;
-	padding:25px 50px;
-	text-align:center;
-    overflow:auto;
-
-}
-
-#dynamic_box {
-	font-size:1.2em;
-}
-#dynamic_box h3 {
-	text-align:center;
-}
-p.form_p {
-	text-align:center !important;
-	margin:0px auto !important;
-	
-}
-input.invisible {
-	background-color:transparent;
-	font-size:1em;
-	font-family:courier;
-	border:none;
-	color:#fff;
-	width:400px;
-}
-p.form_p button {
-	background-color: #1a1a1a;
-	color:#fff;
-	border:1px solid #ccc;
-	font-size:1.3em;
-	cursor:pointer;
-	padding:10px;
-	margin:10px;
-	border-radius: 5px;
-}
-
-
-
-div.user_info p, div.account_info p, div.login_instructions p {
-	padding:0px;
-	margin:5px;
-	text-align:left;
-}
-
-div.login_instructions ul {
-text-align:left;
-}
-span.label {
-	width:300px;
-	margin-left:131px;
-	display:inline-block;
-	text-align:right;
-	font-weight:bold;
-}
-span.descriptor {
-	width:400px;
-	text-align:center;
-	display:inline;
-}
-div.user_info, div.account_info {
-	text-align:left;
-}
-
-div.error {
-	margin:10px 75px;		
-	text-align:center;
-}
-div.error h3 {
-	color:#f99;
-}
-
-.has_account_true, .account_disabled_false {
-	color:#8f8;
-}
-
-.has_account_false, .account_disabled_true {
-	color:#f88;
-}
-
-.no-close .ui-dialog-titlebar-close {
-  display: none;
-}
-
-p.warning {
-	padding-left:50px;
-	padding-right:50px;
-	color:#ff9;
-}
-
-a {
- color:yellow;
-}
-.descriptor {
-	margin-left:15px;
-}
-
-button.descriptor {
-	cursor:pointer;
-}
-
-code.descriptor {
-    
-    display: inline;
-    color:#8f8;
-}
-
-</style>
 <script type="text/javascript" src="js/jquery.js"> </script>
 <script type="text/javascript" src="js/jsrender.js"> </script>
 
@@ -292,50 +156,73 @@ $(function() {
 <script type="text/x-jsrender" id="user_info_template">
 	<div class="user_info">
 	<h3>Login Information</h3>
-		<p>
-			<span class="label">CTFd:</span>
-            <span class="descriptor">
-		<a href="https://ctfd.{{:StackFrontDomain}}/">
-	    	ctfd.{{:StackFrontDomain}}
-		</a>
-	    </span> 
-            <br />
-            <span class="label">CTFd Username:</span>
-            <code class="descriptor">student</code>
-            <br />
-            <span class="label">CTFd Password:</span>
-            <code class="descriptor">{{:StudentCTFdPassword}}</code>
-		</p>
-		<p>
-			<span class="label">Guacamole (VNC/SSH):</span>
-            <span class="descriptor">
-		<a target="_new" href="https://guacamole.{{:StackFrontDomain}}/#/client/U1NIAGMAZGVmYXVsdA?username=student&password={{:StudentGuacPassword}}">
-			Web Shell (SSH)
-		</a>
-		<a target="_new" href="https://guacamole.{{:StackFrontDomain}}/#/client/Vk5DAGMAZGVmYXVsdA?username=student&password={{:StudentGuacPassword}}">
-			VNC
-		</a>
-	    </span>
-            <br />
-            <span class="label">Guacamole Username:</span>
-            <code class="descriptor">student</code>
-            <br />
-            <span class="label">Guacamole Password:</span>
-            <code class="descriptor">{{:StudentGuacPassword}}</code>
-		</p>
-		<p>
-            <span class="label">Student VM (ssh tcp/22):</span>
-            <span class="descriptor">vm.{{:StackFrontDomain}}</span>
-            <br />
-            <span class="label">Student VM Username:</span>
-            <code class="descriptor">ubuntu</code>
-            <br />
-            <span class="label">Student VM Password:</span>
-            <code class="descriptor">{{:StudentVMPassword}}</code>
-			<br />
-			<span class="label">Student VM SSH Key:</span>
-			<button class="descriptor" onclick="javascript:download_student_priv_key()">Download Key</button>
-		</p>
+		<div class="login-section">
+			<div class="section-label"><span>CTFd</span> [<a href="#" onclick="javascript:$(this).parent().siblings('.credentials').toggle()">Toggle Credentials</a>]</div>
+			<div class="credentials">
+			<ul class="credentials-list">
+				<li>
+					<span class="label">Domain:</span>
+					<code class="descriptor">ctfd.{{:StackFrontDomain}}</code>
+				</li>
+				<li>
+					<span class="label">Username:</span>
+					<code class="descriptor">student</code>
+				</li>
+				<li>
+					<span class="label">Password:</span>
+            		<code class="descriptor">{{:StudentCTFdPassword}}</code>
+				</li>
+			</ul>    
+			</div>  
+			<div class="launch-button">
+				<a target="_new" href="https://ctfd.{{:StackFrontDomain}}/">
+					<button>Open CTFd</button>
+				</a>
+			</div>      
+		</div>
+		<div class="login-section">
+			<div class="section-label"><span>Student VM</span> [<a href="#" onclick="javascript:$(this).parent().siblings('.credentials').toggle()">Toggle Credentials</a>]</div>
+			<div class="credentials">
+			<ul class="credentials-list">
+				<li>
+					<span class="label">Domain:</span>
+					<code class="descriptor">{{:VMDomain}}</code>
+				</li>
+				<li>
+					<span class="label">Username:</span>
+					<code class="descriptor">{{:StudentVMUsername}}</code>
+				</li>
+				<li>
+					<span class="label">Password:</span>
+            		<code class="descriptor">{{:StudentVMPassword}}</code>
+				</li>
+				<li>
+					<span class="label">Guacamole URL:</span>
+					<code class="descriptor">{{:GuacURL}}</code>
+
+				</li>
+				<li>
+					<span class="label">Guacamole Username:</span>
+					<code class="descriptor">{{:StudentGuacUsername}}</code>
+				</li>
+				<li>
+					<span class="label">Guacamole Password:</span>
+					<code class="descriptor">{{:StudentGuacPassword}}</code>
+				</li>
+			</ul>    
+			</div>
+			
+			<div class="launch-button">
+				
+				<button class="descriptor" onclick="javascript:download_student_priv_key()">Download SSH Key</button>
+				<a target="_new" href="{{:GuacURL}}/#/client/U1NIAGMAZGVmYXVsdA?username=student&password={{:StudentGuacPassword}}/"><button>Web-SSH</button></a>
+				<a target="_new" href="{{:GuacURL}}/#/client/Vk5DAGMAZGVmYXVsdA?username=student&password={{:StudentGuacPassword}}/"><button>Web-VNC</button></a>
+			</div>      
+		</div>
+		<div class="login-section">
+			<div class="section-label"><span>Session Timer</span></div>
+			<div class="timer-value"><center>[Not Started]</center></div>
+		</div>
 	</div>
 </script>
 

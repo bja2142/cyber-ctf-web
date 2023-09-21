@@ -1,0 +1,176 @@
+
+html, body {
+	width:100%;
+	height:100%;
+	margin:0;
+	padding:0;
+	background-color:#1a1a1a;
+}
+
+div.login-section {
+    border: 1px dashed #eee;
+    padding:5px;
+    margin:5px;
+    border-radius:5px;
+}
+div.section-label {
+    text-align:center;
+    margin:5px;
+}
+div.section-label span {
+    font-size:1.2em;
+    text-decoration:underline
+}
+
+div.launch-button {
+    text-align:center;
+}
+
+button {
+    cursor:pointer;
+    font-size:1.1em;
+}
+
+.credentials {
+    display:none;
+}
+
+.credentials ul li {
+    list-style-type:none;
+}
+
+ul.credentials-list {
+    text-align:center;
+}
+ul.credentials-list {
+    width:50%;
+    min-width:600px;
+    margin:0px auto;
+    text-align:left;
+}
+
+div.outer {
+	width:1000px;
+	background-color:#000;
+	background-image:url('img/cyber_regimental_crest-web.png');
+	background-position:center;
+	background-attachment:fixed;
+	background-repeat: no-repeat;
+	margin:0px auto;
+	background-size:500px auto;
+	min-height:100%;
+	overflow:overflow;
+}
+div.content-background {
+    background: rgba(0,0,0, .75);
+    min-height:100%;
+    width:100%;
+}
+
+div.content {
+	color:#fff;
+	padding:25px 50px;
+	text-align:center;
+    overflow:auto;
+    min-height:100%;
+
+}
+
+#dynamic_box {
+    width:100%;
+	font-size:1.2em;
+}
+#dynamic_box h3 {
+	text-align:center;
+}
+p.form_p {
+	text-align:center !important;
+	margin:0px auto !important;
+	
+}
+input.invisible {
+	background-color:transparent;
+	font-size:1em;
+	font-family:courier;
+	border:none;
+	color:#fff;
+	width:400px;
+}
+p.form_p button {
+	background-color: #1a1a1a;
+	color:#fff;
+	border:1px solid #ccc;
+	font-size:1.3em;
+	cursor:pointer;
+	padding:10px;
+	margin:10px;
+	border-radius: 5px;
+}
+
+
+
+div.user_info p, div.account_info p, div.login_instructions p {
+	padding:0px;
+	margin:5px;
+	text-align:left;
+}
+
+div.login_instructions ul {
+text-align:left;
+}
+span.label {
+	display:block;
+	font-weight:bold;
+    text-decoration:underline;
+}
+span.descriptor {
+	width:400px;
+	text-align:center;
+	display:inline;
+}
+div.user_info, div.account_info {
+	text-align:left;
+}
+
+div.error {
+	margin:10px 75px;		
+	text-align:center;
+}
+div.error h3 {
+	color:#f99;
+}
+
+.has_account_true, .account_disabled_false {
+	color:#8f8;
+}
+
+.has_account_false, .account_disabled_true {
+	color:#f88;
+}
+
+.no-close .ui-dialog-titlebar-close {
+  display: none;
+}
+
+p.warning {
+	padding-left:50px;
+	padding-right:50px;
+	color:#ff9;
+}
+
+a {
+ color:yellow;
+}
+.descriptor {
+	margin-left:15px;
+}
+
+button.descriptor {
+	cursor:pointer;
+}
+
+code.descriptor {
+    
+    display: inline;
+    color:#8f8;
+}
