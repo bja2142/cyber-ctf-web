@@ -231,13 +231,22 @@ function dict_to_formdata(data) {
 
 
 function auto_login_ctfd() {
+	// First load page in iframe to get cookie set.
+	// Then use that cookie to login.
+	// otherwise, a new cookie is used and login doesn't work.
 	var ctfd_url = "https://ctfd."+localStorage.getItem("StackFrontDomain")+"/login"
-	$.ajax({type:"GET", url:ctfd_url, xhrFields: {
-      withCredentials: true
-   },
-   success: function(page_source) {
+	var iframe = $("<iframe id='temporary_iframe'></iframe>");
+	iframe.load(function() {
+		$.ajax({type:"GET", url:ctfd_url, xhrFields: {
+			withCredentials: true
+		},
+		success: function(page_source) {
 				login_ctfd(page_source, ctfd_url, "student", localStorage.getItem("StudentCTFdPassword"))
 			}});
+	});
+	iframe.attr("src", ctfd_url)
+		.css("display", "none")
+		.appendTo("body");
 }
 
 function auto_login_guacamole() {
