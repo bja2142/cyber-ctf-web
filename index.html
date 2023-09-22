@@ -3,7 +3,7 @@
 <html>
 <head>
 <title>Student Panel</title>
-<link rel="icon" type="image/png" href="/img/insignia-small.png">
+<link rel="icon" type="image/png" href="/css/img/insignia-small.png">
 <link rel="stylesheet" href="css/style.css">
 
 <script type="text/javascript" src="js/jquery.js"> </script>
@@ -215,8 +215,8 @@ $(function() {
 			<div class="launch-button">
 				
 				<button class="descriptor" onclick="javascript:download_student_priv_key()">Download SSH Key</button>
-				<a target="_new" href="{{:GuacURL}}/#/client/U1NIAGMAZGVmYXVsdA?username=student&password={{:StudentGuacPassword}}/"><button>Web-SSH</button></a>
-				<a target="_new" href="{{:GuacURL}}/#/client/Vk5DAGMAZGVmYXVsdA?username=student&password={{:StudentGuacPassword}}/"><button>Web-VNC</button></a>
+				<a target="_new" href="{{:GuacURL}}/#/client/U1NIAGMAZGVmYXVsdA/?username=student&password={{:StudentGuacPassword}}"><button>Web-SSH</button></a>
+				<a target="_new" href="{{:GuacURL}}/#/client/Vk5DAGMAZGVmYXVsdA/?username=student&password={{:StudentGuacPassword}}"><button>Web-VNC</button></a>
 			</div>      
 		</div>
 		<div class="login-section">
