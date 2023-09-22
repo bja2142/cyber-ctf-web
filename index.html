@@ -100,7 +100,7 @@ function auto_login_ctfd() {
 	// otherwise, a new cookie is used and login doesn't work.
 	var ctfd_url = "https://ctfd."+localStorage.getItem("StackFrontDomain")+"/login"
 	var iframe = $("<iframe id='temporary_iframe'></iframe>");
-	iframe.load(function() {
+	iframe.on("load",function() {
 		$.ajax({type:"GET", url:ctfd_url, xhrFields: {
 			withCredentials: true
 		},
