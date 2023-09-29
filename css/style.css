@@ -107,6 +107,10 @@ p.form_p button {
 	border-radius: 5px;
 }
 
+.timer-value {
+	text-align:center;
+}
+
 
 
 div.user_info p, div.account_info p, div.login_instructions p {
