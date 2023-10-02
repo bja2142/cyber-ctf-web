@@ -178,8 +178,39 @@ $(function() {
 		setInterval(refreshTimerValue,1000*60);
 		setInterval(updateTimerDisplay,1000);
 	}
+	if(localStorage.getItem("cancelTeardownKeyURL") != null) {
+		$.get(localStorage.getItem("cancelTeardownKeyURL"), function() {
+			show_teardown_canceled();
+		});
+	}
 })
 
+function show_teardown_canceled()
+{
+	$("#cancel_teardown").empty();
+	$("#cancel_teardown").text("Automated teardown has been canceled.")
+}
+
+function show_teardown_cancel_failed()
+{
+	$("#cancel_teardown").empty();
+	$("#cancel_teardown").text("Automated teardown cancelation failed")
+}
+
+function cancel_teardown()
+{
+	if(localStorage.getItem("CancelTeardownAPI") != null) {
+		$.get(localStorage.getItem("CancelTeardownAPI"), function(data) {
+			if(data == "success") {
+				show_teardown_canceled();
+			} else {
+				show_teardown_cancel_failed();
+			}
+		})
+	} else {
+		console.log("Cannot find key in storage: CancelTeardownAPI ")
+	}
+}
 
 
 </script>
@@ -252,6 +283,17 @@ $(function() {
 		<div class="login-section">
 			<div class="section-label"><span>Session Timer</span></div>
 			<div class="timer-value"><center>[Not Started]</center></div>
+		</div>
+		<div class="login-section">
+			<div class="section-label"><span>Session Teardown</span></div>
+			<p>Your Student VM will be torn down shortly after the timer expires.</p>
+			<p>The rest of your assessment infrastructure will be torn down after a backup is completed of all logs.</p>
+			<p>If there were any irregularities with your assessment that you feel may have impacted the results, please select the below button to defer deconstruction. Then reach out to your proctor to request a manual review.</p>
+			<div id="cancel_teardown">
+				<a href="javascript:cancel_teardown()">
+					<button>Cancel Automated Teardown</button>
+				</a>
+			</div>
 		</div>
 	</div>
 </script>
