@@ -188,12 +188,14 @@ $(function() {
 function show_teardown_canceled()
 {
 	$("#cancel_teardown").empty();
+	$("#teardown_narrative").empty();
 	$("#cancel_teardown").text("Automated teardown has been canceled.")
 }
 
 function show_teardown_cancel_failed()
 {
 	$("#cancel_teardown").empty();
+	$("#teardown_narrative").empty();
 	$("#cancel_teardown").text("Automated teardown cancelation failed")
 }
 
@@ -284,11 +286,13 @@ function cancel_teardown()
 			<div class="section-label"><span>Session Timer</span></div>
 			<div class="timer-value"><center>[Not Started]</center></div>
 		</div>
-		<div class="login-section">
+		<div class="teardown-section">
 			<div class="section-label"><span>Session Teardown</span></div>
-			<p>Your Student VM will be torn down shortly after the timer expires.</p>
-			<p>The rest of your assessment infrastructure will be torn down after a backup is completed of all logs.</p>
-			<p>If there were any irregularities with your assessment that you feel may have impacted the results, please select the below button to defer deconstruction. Then reach out to your proctor to request a manual review.</p>
+			<div id="teardown_narrative">
+				<p>Your Student VM will be torn down shortly after the timer expires.</p>
+				<p>The rest of your assessment infrastructure will be torn down after a backup is completed of all logs.</p>
+				<p>If there were any irregularities with your assessment that you feel may have impacted the results, please select the below button to defer destruction. Then reach out to your proctor to request a manual review.</p>
+			</div>
 			<div id="cancel_teardown">
 				<a href="javascript:cancel_teardown()">
 					<button>Cancel Automated Teardown</button>
