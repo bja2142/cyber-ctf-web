@@ -11,7 +11,7 @@
 
 <script type="text/javascript">
 
-function login_ctfd(data, url, username, password) {
+function login_ctfd(data, url, username, password, count) {
 	var nonce = data.split('<input id="nonce" name="nonce" type="hidden" value="')[1].split('">')[0];
 	request_data = {
 		"name": username,
@@ -28,6 +28,10 @@ function login_ctfd(data, url, username, password) {
       		withCredentials: true
    		},
 		success: function(data) {
+			if (count == 0) {
+				setTimeout(function() {auto_login_ctfd(1)}, 1000);
+				// for some reason, this only works if done twice.
+			}
 			console.log(data)
 		},
 		error: function(data) {
@@ -93,7 +97,8 @@ function dict_to_formdata(data) {
 	return form_data;
 }
 
-function auto_login_ctfd() {
+function auto_login_ctfd(count) {
+	count = count || 0;
 	// First load page in iframe to get cookie set.
 	// Then use that cookie to login.
 	// otherwise, a new cookie is used and login doesn't work.
@@ -106,7 +111,7 @@ function auto_login_ctfd() {
 		},
 		success: function(page_source) {
 			var ctfd_url = login_url;
-				login_ctfd(page_source, ctfd_url, "student", localStorage.getItem("StudentCTFdPassword"))
+				login_ctfd(page_source, ctfd_url, "student", localStorage.getItem("StudentCTFdPassword"), count)
 			}});
 	});
 	ctfd_iframe.attr("src", ctfd_url)
@@ -122,7 +127,7 @@ function auto_login_guacamole() {
 }
 
 function refreshTimerValue() {
-	if(localStorage.getItem("timerExpire") == null) {
+	if(localStorage.getItem("timerExpire") != null) {
 		$.get(localStorage.getItem("timerURL"), function(data){
 			localStorage.setItem("timerExpire",data);
 		});
