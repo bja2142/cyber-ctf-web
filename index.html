@@ -28,10 +28,6 @@ function login_ctfd(data, url, username, password, count) {
       		withCredentials: true
    		},
 		success: function(data) {
-			if (count == 0) {
-				setTimeout(function() {auto_login_ctfd(1)}, 1000);
-				// for some reason, this only works if done twice.
-			}
 			console.log(data)
 		},
 		error: function(data) {
@@ -97,8 +93,7 @@ function dict_to_formdata(data) {
 	return form_data;
 }
 
-function auto_login_ctfd(count) {
-	count = count || 0;
+function auto_login_ctfd() {
 	// First load page in iframe to get cookie set.
 	// Then use that cookie to login.
 	// otherwise, a new cookie is used and login doesn't work.
@@ -111,7 +106,7 @@ function auto_login_ctfd(count) {
 		},
 		success: function(page_source) {
 			var ctfd_url = login_url;
-				login_ctfd(page_source, ctfd_url, "student", localStorage.getItem("StudentCTFdPassword"), count)
+				login_ctfd(page_source, ctfd_url, "student", localStorage.getItem("StudentCTFdPassword"))
 			}});
 	});
 	ctfd_iframe.attr("src", ctfd_url)
@@ -149,6 +144,22 @@ function updateTimerDisplay() {
 	$(".timer-value").text(timerString)
 }
 
+function afterLoadEvents() {
+	if(localStorage.getItem("StudentCTFdPassword") != null) {
+		auto_login_ctfd();
+	}
+	if(localStorage.getItem("timerURL") != null) {
+		refreshTimerValue();
+		setInterval(refreshTimerValue,1000*60);
+		setInterval(updateTimerDisplay,1000);
+	}
+	if(localStorage.getItem("cancelTeardownKeyURL") != null) {
+		$.get(localStorage.getItem("cancelTeardownKeyURL"), function() {
+			show_teardown_canceled();
+		});
+	}
+}
+
 
 $(function() {
     if (window.location.search.indexOf("signed_uri") === -1) {
@@ -173,21 +184,12 @@ $(function() {
             console.log(data);
 			$("#dynamic_box").empty();
             $("#dynamic_box").prepend($.templates("#user_info_template").render(data));
+			afterLoadEvents();
         });
     }
-	if(localStorage.getItem("StudentCTFdPassword") != null) {
-		auto_login_ctfd();
-	}
-	if(localStorage.getItem("timerURL") != null) {
-		refreshTimerValue();
-		setInterval(refreshTimerValue,1000*60);
-		setInterval(updateTimerDisplay,1000);
-	}
-	if(localStorage.getItem("cancelTeardownKeyURL") != null) {
-		$.get(localStorage.getItem("cancelTeardownKeyURL"), function() {
-			show_teardown_canceled();
-		});
-	}
+
+	afterLoadEvents();
+
 })
 
 function show_teardown_canceled()
