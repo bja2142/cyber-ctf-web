@@ -124,7 +124,25 @@ function auto_login_guacamole() {
 function refreshTimerValue() {
 	$.get(localStorage.getItem("timerURL"), function(data){
 		localStorage.setItem("timerExpire",data);
+		var expireString = secondsToDate(data)
+		$("#expire_time").text(expireString)
 	});
+}
+
+function secondsToTimeString(expireTime) {
+    var timeNow = Math.round(new Date().getTime() /1000);
+	var timeLeft = Math.max(expireTime - timeNow,0);
+	var minutes = Math.floor(timeLeft / 60)
+	var hours = Math.floor(minutes /60)
+	minutes = minutes % 60
+	var seconds = timeLeft % 60
+	var timerString = String(hours).padStart(2,0) + ":"+ String(minutes).padStart(2,0) + ":" + String(seconds).padStart(2,0)
+    return timerString;
+}
+
+function secondsToDate(expireTime) {
+    var exp_date = new Date(expireTime * 1000); //seconds to ms
+    return exp_date.toString();
 }
 
 function updateTimerDisplay() {
@@ -132,17 +150,31 @@ function updateTimerDisplay() {
 	if (!expireTime) {
 		return;
 	}
-	var timeNow = Math.round(new Date().getTime() /1000);
-	var timeLeft = Math.max(expireTime - timeNow,0);
-	var minutes = Math.floor(timeLeft / 60)
-	var hours = Math.floor(minutes /60)
-	minutes = minutes % 60
-	var seconds = timeLeft % 60
-	var timerString = String(hours).padStart(2,0) + ":"+ String(minutes).padStart(2,0) + ":" + String(seconds).padStart(2,0)
-	$(".timer-value").text(timerString)
+	var timerString = secondsToTimeString(expireTime);
+	var expireString = secondsToDate(expireTime);
+	$("#time_left").text(timerString)
+}
+
+function passSignedURIToCTFd() {
+	if ( localStorage.getItem("signed_uri") == null) {
+		return;
+	}
+	var ctfd_url = "https://ctfd."+localStorage.getItem("StackFrontDomain")+"/"
+	var ctfd_iframe = $("<iframe id='ctfd_message_iframe'></iframe>");
+	ctfd_iframe.on("load",function() {
+		var win = ctfd_iframe[0].contentWindow;
+		var obj = {
+		name: "Jack"
+		};
+		win.postMessage(JSON.stringify({key: 'signed_uri', data: localStorage.getItem("signed_uri")}), "*");
+	});
+	ctfd_iframe.attr("src", ctfd_url)
+		.css("display", "none")
+		.appendTo("body");
 }
 
 function afterLoadEvents() {
+	passSignedURIToCTFd();
 	if(localStorage.getItem("StudentCTFdPassword") != null) {
 		auto_login_ctfd();
 	}
@@ -159,6 +191,8 @@ function afterLoadEvents() {
 }
 
 
+
+
 $(function() {
     if (window.location.search.indexOf("signed_uri") === -1) {
 		if(localStorage.getItem("StudentStackIdentifier") == null) {
@@ -171,6 +205,7 @@ $(function() {
           
     } else {
         var signed_uri = window.location.search.split("signed_uri=")[1];
+		localStorage.setItem("signed_uri", signed_uri);
         var decoded_uri = atob(signed_uri)
         $.getJSON( decoded_uri, function(data) {
 			Object.entries(data).forEach(([key,value]) => {
@@ -289,7 +324,11 @@ function cancel_teardown()
 		</div>
 		<div class="login-section">
 			<div class="section-label"><span>Session Timer</span></div>
-			<div class="timer-value"><center>[Not Started]</center></div>
+			<strong>End Time:</strong>
+			<div class="timer" id="expire_time"><center>[Not Started]</center></div>
+			<br />
+			<strong>Time Left:</strong>
+			<div class="timer" id="time_left"><center>[Not Started]</center></div>
 		</div>
 		<div class="teardown-section">
 			<div class="section-label"><span>Session Teardown</span></div>

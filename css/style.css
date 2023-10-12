@@ -107,8 +107,11 @@ p.form_p button {
 	border-radius: 5px;
 }
 
-.timer-value {
+.timer {
 	text-align:center;
+	display:inline-block;
+	width:fit-content;
+	padding:10px;
 }
 
 .teardown-section{
