@@ -122,10 +122,12 @@ function auto_login_guacamole() {
 }
 
 function refreshTimerValue() {
-	$.get(localStorage.getItem("timerURL"), function(data){
-		localStorage.setItem("timerExpire",data);
-		var expireString = secondsToDate(data)
-		$("#expire_time").text(expireString)
+	$.get(localStorage.getItem("timerURL"), function(url){
+		$.get(url, function(data) {
+			localStorage.setItem("timerExpire",data);
+			var expireString = secondsToDate(data);
+			$("#expire_time").text(expireString);
+		});
 	});
 }
 
@@ -184,8 +186,10 @@ function afterLoadEvents() {
 		setInterval(updateTimerDisplay,1000);
 	}
 	if(localStorage.getItem("cancelTeardownKeyURL") != null) {
-		$.get(localStorage.getItem("cancelTeardownKeyURL"), function() {
-			show_teardown_canceled();
+		$.get(localStorage.getItem("cancelTeardownKeyURL"), function(url) {
+			$.get(url, function() {
+				show_teardown_canceled();
+			});
 		});
 	}
 }
@@ -207,18 +211,20 @@ $(function() {
         var signed_uri = window.location.search.split("signed_uri=")[1];
 		localStorage.setItem("signed_uri", signed_uri);
         var decoded_uri = atob(signed_uri)
-        $.getJSON( decoded_uri, function(data) {
-			Object.entries(data).forEach(([key,value]) => {
-				if (typeof value === 'object') {
-					value = JSON.stringify(value);
-				}
-				localStorage.setItem(key, value);
+        $.get( decoded_uri, function(result_url) {
+			$.getJSON(result_url, function(data) {
+				Object.entries(data).forEach(([key,value]) => {
+					if (typeof value === 'object') {
+						value = JSON.stringify(value);
+					}
+					localStorage.setItem(key, value);
+				});
+				console.log(data);
+				$("#dynamic_box").empty();
+				$("#dynamic_box").prepend($.templates("#user_info_template").render(data));
+				afterLoadEvents();
 			});
-            console.log(data);
-			$("#dynamic_box").empty();
-            $("#dynamic_box").prepend($.templates("#user_info_template").render(data));
-			afterLoadEvents();
-        });
+		});
     }
 
 	afterLoadEvents();
