@@ -195,6 +195,22 @@ function afterLoadEvents() {
 }
 
 
+function check_same_domain(url) {
+	if(window.location.origin.substring(0,8) == "http://localhost") {
+		return true;
+	} else if (window.location.origin.substring(0,8) == url.subsring(0,8)) {
+		let url_base = url.substring(8).split("/")[0];
+		let origin_base = window.location.origin.substring(8);
+		let offset = url_base.length - origin_base.length;
+		if (url_base.offset(offset) == origin_base) {
+			return true;
+		}
+	}
+
+	return false;
+
+}
+
 
 
 $(function() {
@@ -212,18 +228,20 @@ $(function() {
 		localStorage.setItem("signed_uri", signed_uri);
         var decoded_uri = atob(signed_uri)
         $.get( decoded_uri, function(result_url) {
-			$.getJSON(result_url, function(data) {
-				Object.entries(data).forEach(([key,value]) => {
-					if (typeof value === 'object') {
-						value = JSON.stringify(value);
-					}
-					localStorage.setItem(key, value);
+			if(check_same_domain(decoded_uri)) {
+				$.getJSON(result_url, function(data) {
+					Object.entries(data).forEach(([key,value]) => {
+						if (typeof value === 'object') {
+							value = JSON.stringify(value);
+						}
+						localStorage.setItem(key, value);
+					});
+					console.log(data);
+					$("#dynamic_box").empty();
+					$("#dynamic_box").prepend($.templates("#user_info_template").render(data));
+					afterLoadEvents();
 				});
-				console.log(data);
-				$("#dynamic_box").empty();
-				$("#dynamic_box").prepend($.templates("#user_info_template").render(data));
-				afterLoadEvents();
-			});
+			}
 		});
     }
 
@@ -266,7 +284,7 @@ function cancel_teardown()
 	<div class="user_info">
 	<h3>Login Information</h3>
 		<div class="login-section">
-			<div class="section-label"><span>CTFd</span> [<a href="javascript:void(0);" onclick="javascript:$(this).parent().siblings('.credentials').toggle()">Toggle Credentials</a>]</div>
+			<div class="section-label"><span>Assessment Interface</span> [<a href="javascript:void(0);" onclick="javascript:$(this).parent().siblings('.credentials').toggle()">Toggle Credentials</a>]</div>
 			<div class="credentials">
 			<ul class="credentials-list">
 				<li>
@@ -285,7 +303,7 @@ function cancel_teardown()
 			</div>  
 			<div class="launch-button">
 				<a target="_new" href="https://ctfd.{{:StackFrontDomain}}/">
-					<button>Open CTFd</button>
+					<button>Open Assessment Interface</button>
 				</a>
 			</div>      
 		</div>

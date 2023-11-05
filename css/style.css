@@ -142,11 +142,9 @@ div.user_info, div.account_info {
 	text-align:left;
 }
 
-div.error {
+.error {
 	margin:10px 75px;		
 	text-align:center;
-}
-div.error h3 {
 	color:#f99;
 }
 
