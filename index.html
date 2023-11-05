@@ -198,11 +198,11 @@ function afterLoadEvents() {
 function check_same_domain(url) {
 	if(window.location.origin.substring(0,8) == "http://localhost") {
 		return true;
-	} else if (window.location.origin.substring(0,8) == url.subsring(0,8)) {
+	} else if (window.location.origin.substring(0,8) == url.substring(0,8)) {
 		let url_base = url.substring(8).split("/")[0];
 		let origin_base = window.location.origin.substring(8);
 		let offset = url_base.length - origin_base.length;
-		if (url_base.offset(offset) == origin_base) {
+		if (url_base.substring(offset) == origin_base) {
 			return true;
 		}
 	}
