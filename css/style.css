@@ -107,6 +107,27 @@ p.form_p button {
 	border-radius: 5px;
 }
 
+.section-vm-status {
+	text-align:center;
+	padding:10px;
+}
+
+.section-vm-status button {
+	display:none;
+}
+
+.vm-status-text-running {
+	color: #6f6;
+}
+
+.vm-status-text-stopped {
+	color: #f66;
+}
+
+.vm-status-text {
+	color:#ff9;
+}
+
 .timer {
 	text-align:center;
 	display:inline-block;
