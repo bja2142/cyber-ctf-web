@@ -193,6 +193,8 @@ function update_vm_status(element_id, status) {
 	if (status == "stopped") {
 		$(element_id).addClass("vm-status-text-stopped")
 		$(element_id+"_button").show()
+		$(element_id+"_button").removeAttr("disabled");
+		$(element_id+"_button").text("Start");
 	} else if (status == "running") {
 		$(element_id).addClass("vm-status-text-running");
 		$(element_id+"_button").hide();
@@ -214,6 +216,7 @@ function check_student_vm_status() {
 
 function start_student_vm() {
 	$("#student_vm_status_button").attr("disabled","disabled");
+	$("#student_vm_status_button").text("Starting...");
 	if(localStorage.getItem("StudentVMStartAPI") != null) {
 		$.get(localStorage.getItem("StudentVMStartAPI")).always(function() {
 			setTimeout(function() {
@@ -222,7 +225,7 @@ function start_student_vm() {
 				}).always( function() {
 					$("#student_vm__status_button").removeAttr("disabled");
 				});
-			},5*1000);
+			},10*1000);
 		});
 	}
 	return false;
@@ -230,7 +233,7 @@ function start_student_vm() {
 
 function start_backend() {
 	$("#backend_status_button").attr("disabled","disabled");
-
+	$("#backend_status_button").text("Starting...");
 	if(localStorage.getItem("BackendStartAPI") != null) {
 		$.get(localStorage.getItem("BackendStartAPI")).always(function() {
 			setTimeout(function() {
@@ -239,7 +242,7 @@ function start_backend() {
 				}).always( function() {
 					$("#backend_status_button").removeAttr("disabled");
 				});
-			},5*1000);
+			},10*1000);
 		});
 	}
 	return false;
