@@ -175,6 +175,56 @@ function passSignedURIToCTFd() {
 		.appendTo("body");
 }
 
+function check_backend_status() {
+	if(localStorage.getItem("BackendStatusAPI") != null) {
+		$.get(localStorage.getItem("BackendStatusAPI"), function(status) {
+			$("#backend_status").text(status);
+		}).always(function() {
+			setTimeout(check_backend_status, 60*1000);
+		})
+	}
+}
+
+function check_student_vm_status() {
+	if(localStorage.getItem("StudentVMStatusAPI") != null) {
+		$.get(localStorage.getItem("StudentVMStatusAPI"), function(status) {
+			$("#student_vm_status").text(status);
+		}).always(function() {
+			setTimeout(check_student_vm_status, 60*1000);
+		})
+	}
+}
+
+function start_student_vm() {
+	$("#student_vm_button").attr("disabled","disabled");
+	if(localStorage.getItem("StudentVMStartAPI") != null) {
+		$.get(localStorage.getItem("StudentVMStartAPI")).always(function() {
+			setTimeout(function() {
+				$.get(localStorage.getItem("StudentVMSStatusAPI"), function(status) {
+					$("#student_vm_status").text(status);
+				}).always( function() {
+					$("#student_vm_button").removeAttr("disabled");
+				});
+			},10*1000);
+		});
+	}
+}
+
+function start_backend() {
+	$("#backend_button").attr("disabled","disabled");
+	if(localStorage.getItem("BackendStartAPI") != null) {
+		$.get(localStorage.getItem("BackendStartAPI")).always(function() {
+			setTimeout(function() {
+				$.get(localStorage.getItem("BackendStatusAPI"), function(status) {
+					$("#backend_status").text(status);
+				}).always( function() {
+					$("#backend_button").removeAttr("disabled");
+				});
+			},10*1000);
+		});
+	}
+}
+
 function afterLoadEvents() {
 	passSignedURIToCTFd();
 	if(localStorage.getItem("StudentCTFdPassword") != null) {
@@ -191,6 +241,17 @@ function afterLoadEvents() {
 				show_teardown_canceled();
 			});
 		});
+	}
+	if(localStorage.getItem("BackendStatusAPI") != null) {
+		$.get(localStorage.getItem("BackendStatusAPI"), function(status) {
+			$("#backend_status").text(status);
+		})
+	}
+
+	if(localStorage.getItem("StudentVMStatusAPI") != null) {
+		$.get(localStorage.getItem("StudentVMStatusAPI"), function(status) {
+			$("#student_vm_status").text(status);
+		})
 	}
 }
 
@@ -285,6 +346,7 @@ function cancel_teardown()
 	<h3>Login Information</h3>
 		<div class="login-section">
 			<div class="section-label"><span>Assessment Interface</span> [<a href="javascript:void(0);" onclick="javascript:$(this).parent().siblings('.credentials').toggle()">Toggle Credentials</a>]</div>
+			<div class="section-vm-status"><span>Backend Status:</span> <span id="backend_status">Loading...</span> <button id="backend_button" onclick="javascript:start_backend()">Start</button></div>
 			<div class="credentials">
 			<ul class="credentials-list">
 				<li>
@@ -309,6 +371,7 @@ function cancel_teardown()
 		</div>
 		<div class="login-section">
 			<div class="section-label"><span>Student VM</span> [<a href="javascript:void(0);" onclick="javascript:$(this).parent().siblings('.credentials').toggle()">Toggle Credentials</a>]</div>
+			<div class="section-vm-status"><span>Student VM Status:</span> <span id="student_vm_status">Loading...</span> <button id="student_vm_button" onclick="javascript:start_student_vm()">Start</button></div>
 			<div class="credentials">
 			<ul class="credentials-list">
 				<li>
