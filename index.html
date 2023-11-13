@@ -20,13 +20,14 @@ function login_ctfd(data, url, username, password, count) {
 		"nonce": nonce
 		
 	}
+
 	$.ajax({
 		type: "POST",
 		url: url,
 		data: request_data,
 		xhrFields: {
-      		withCredentials: true
-   		},
+			withCredentials: true
+		},
 		success: function(data) {
 			console.log(data)
 		},
@@ -34,7 +35,6 @@ function login_ctfd(data, url, username, password, count) {
 			console.log("Failure");
 			console.log(data);
 		}
-
 	})
 }
 
@@ -101,25 +101,26 @@ function auto_login_ctfd() {
 	var ctfd_iframe = $("<iframe id='temporary_iframe'></iframe>");
 	ctfd_iframe.on("load",function() {
 		var login_url = ctfd_url+"login";
-		$.ajax({type:"GET", url:login_url, xhrFields: {
-			withCredentials: true
-		},
-		success: function(page_source) {
-			var ctfd_url = login_url;
-				login_ctfd(page_source, ctfd_url, "student", localStorage.getItem("StudentCTFdPassword"))
-			}});
+		$.ajax({
+			type:"GET",
+			url:login_url, xhrFields: {
+				withCredentials: true
+			},
+			success: function(page_source) {
+				var ctfd_url = login_url;
+				if (page_source.indexOf("'userName': null") != -1) {
+					login_ctfd(page_source, ctfd_url, "student", localStorage.getItem("StudentCTFdPassword"))
+				}
+			}
+		}).always(function() {
+			ctfd_iframe.remove();
+		});
 	});
 	ctfd_iframe.attr("src", ctfd_url)
 		.css("display", "none")
 		.appendTo("body");
 }
 
-function auto_login_guacamole() {
-	var guac_url = "https://guacamole."+localStorage.getItem("StackFrontDomain")+"/api/tokens"
-	$.post(ctfd_url, function(page_source) {
-				login_ctfd(page_source, ctfd_url, "student", localStorage.getItem("StudentCTFdPassword"))
-			});
-}
 
 function refreshTimerValue() {
 	$.get(localStorage.getItem("timerURL"), function(url){
@@ -297,7 +298,7 @@ $(function() {
 			$("#dynamic_box").empty();
             $("#dynamic_box").prepend($.templates("#user_info_template").render(localStorage));
 		}
-          
+		afterLoadEvents();
     } else {
         var signed_uri = window.location.search.split("signed_uri=")[1];
 		localStorage.setItem("signed_uri", signed_uri);
@@ -314,14 +315,11 @@ $(function() {
 					console.log(data);
 					$("#dynamic_box").empty();
 					$("#dynamic_box").prepend($.templates("#user_info_template").render(data));
-					afterLoadEvents();
+					window.history.replaceState(null, document.title, "/index.html");
 				});
 			}
-		});
+		}).always(afterLoadEvents);
     }
-
-	afterLoadEvents();
-
 })
 
 function show_teardown_canceled()
