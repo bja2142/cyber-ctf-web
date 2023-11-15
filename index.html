@@ -244,7 +244,7 @@ function start_student_vm() {
 }
 
 function reboot_backend() {
-	if(!confirm("Are you sure you want to restart the backend instance? Challenges will be temporarily offline until it reboots.")) {
+	if(!confirm("Are you sure you want to restart the backend instance? Challenges will be temporarily offline until it reboots. Only do this if you cannot reach a challenge.")) {
 		return;
 	}
 	$("#backend_status_reboot_button").attr("disabled","disabled");
