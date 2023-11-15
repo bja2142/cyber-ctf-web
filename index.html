@@ -196,12 +196,23 @@ function update_vm_status(element_id, status) {
 		$(element_id+"_button").show()
 		$(element_id+"_button").removeAttr("disabled");
 		$(element_id+"_button").text("Start");
+		if (element_id == "#backend_status") {
+			$(element_id+"_reboot_button").hide();
+		}
 	} else if (status == "running") {
 		$(element_id).addClass("vm-status-text-running");
+		if (element_id == "#backend_status") {
+			$(element_id+"_reboot_button").text("Reboot");
+			$(element_id+"_reboot_button").show();
+			$(element_id+"_reboot_button").removeAttr("disabled");
+		}
 		$(element_id+"_button").hide();
 	} else {
 		$(element_id).addClass("vm-status-text");
 		$(element_id+"_button").hide();
+		if (element_id == "#backend_status") {
+			$(element_id+"_reboot_button").hide();
+		}
 	}
 }
 
@@ -231,6 +242,27 @@ function start_student_vm() {
 	}
 	return false;
 }
+
+function reboot_backend() {
+	if(!confirm("Are you sure you want to restart the backend instance? Challenges will be temporarily offline until it reboots.")) {
+		return;
+	}
+	$("#backend_status_reboot_button").attr("disabled","disabled");
+	$("#backend_status_reboot_button").text("Rebooting...");
+	if(localStorage.getItem("BackendVMRebootAPI") != null) {
+		$.get(localStorage.getItem("BackendVMRebootAPI")).always(function() {
+			setTimeout(function() {
+				$.get(localStorage.getItem("BackendStatusAPI"), function(status) {
+					update_vm_status("#backend_status",status);
+				}).always( function() {
+					$("#backend_status_reboot_button").removeAttr("disabled");
+				});
+			},45*1000);
+		});
+	}
+	return false;
+}
+
 
 function start_backend() {
 	$("#backend_status_button").attr("disabled","disabled");
@@ -318,7 +350,11 @@ $(function() {
 					window.history.replaceState(null, document.title, "/index.html");
 				});
 			}
-		}).always(afterLoadEvents);
+		}).always(
+			function() {
+				setTimeout(afterLoadEvents, 1000);
+			}
+		);
     }
 })
 
@@ -358,7 +394,10 @@ function cancel_teardown()
 	<h3>Login Information</h3>
 		<div class="login-section">
 			<div class="section-label"><span>Assessment Interface</span> [<a href="javascript:void(0);" onclick="javascript:$(this).parent().siblings('.credentials').toggle()">Toggle Credentials</a>]</div>
-			<div class="section-vm-status"><span>Backend Status:</span> <span id="backend_status" class="vm-status-text">Loading...</span> <button id="backend_status_button" onclick="javascript:return start_backend()">Start</button></div>
+			<div class="section-vm-status"><span>Backend Status:</span> <span id="backend_status" class="vm-status-text">Loading...</span> 
+			<button id="backend_status_button" onclick="javascript:return start_backend()">Start</button>
+			<button id="backend_status_reboot_button" onclick="javascript:return reboot_backend()">Reboot</button>
+			</div>
 			<div class="credentials">
 			<ul class="credentials-list">
 				<li>
