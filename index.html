@@ -374,6 +374,8 @@ function show_teardown_cancel_failed()
 
 function cancel_teardown()
 {
+	if(!confirm("Are you sure you want to cancel automated teardown? Doing this may significantly delay the processing of your exam and should only be done if your exam is broken and requires manual inspection."))
+		return
 	if(localStorage.getItem("CancelTeardownAPI") != null) {
 		$.get(localStorage.getItem("CancelTeardownAPI"), function(data) {
 			if(data == "success") {
