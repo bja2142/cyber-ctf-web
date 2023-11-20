@@ -392,6 +392,13 @@ function cancel_teardown()
 
 </script>
 <script type="text/x-jsrender" id="user_info_template">
+	<p>
+		Welcome to your assessment panel. This panel allows you to access your Assesment Interface and your individual Virtual Machine. The panel buttons should provide direct access without manually entering a password; however, if you need them, you can click the toggle to view your passwords for the various components. You can also download the SSH key for use if you have an SSH client available on your workstation.
+	</p>
+	<p>
+		Your VM and the backend VM will automatically shutdown if the assessment has not been started within 45 minutes of starting up. You can use the buttons in this interface to power them back on. If you do not, the interface will power both on when you trigger the start of your assessment.
+
+	</p>
 	<div class="user_info">
 	<h3>Login Information</h3>
 		<div class="login-section">
@@ -417,9 +424,9 @@ function cancel_teardown()
 			</ul>    
 			</div>  
 			<div class="launch-button">
-				<a target="_blank" href="https://ctfd.{{:StackFrontDomain}}/">
-					<button>Open Assessment Interface</button>
-				</a>
+				<a target="_blank" href="https://ctfd.{{:StackFrontDomain}}/"><button>Open Assessment Interface</button></a>
+			<br />
+			<span style="color:#f8f;"> &uarr;Start Here&uarr;</span>
 			</div>      
 		</div>
 		<div class="login-section">
@@ -521,7 +528,7 @@ function cancel_teardown()
 	<div class="outer">
     <div class="content-background">
 	<div class="content">
-		<h1>Cyber Assessment</h2>
+		<h1>Cyber Assessment Candidate Interface</h2>
 		<div id="dynamic_box"><center>Loading...</center></div>
 		<noscript>Sorry, you need javascript.</noscript>
 	</div>
