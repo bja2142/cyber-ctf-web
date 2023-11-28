@@ -347,14 +347,13 @@ $(function() {
 					console.log(data);
 					$("#dynamic_box").empty();
 					$("#dynamic_box").prepend($.templates("#user_info_template").render(data));
-					window.history.replaceState(null, document.title, "/index.html");
+					setTimeout(function() {window.history.replaceState(null, document.title, "/index.html");}, 5000);
 				});
 			}
 		}).always(
 			function() {
-				setTimeout(afterLoadEvents, 1000);
-				setTimeout(afterLoadEvents, 5000);
-			}()
+				setTimeout(afterLoadEvents, 2000);
+			}
 		);
     }
 })
