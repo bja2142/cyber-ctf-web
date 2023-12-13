@@ -282,7 +282,7 @@ function start_backend() {
 }
 
 function afterLoadEvents() {
-	passSignedURIToCTFd();
+	//passSignedURIToCTFd();
 	if(localStorage.getItem("StudentCTFdPassword") != null) {
 		auto_login_ctfd();
 	}
@@ -347,12 +347,12 @@ $(function() {
 					console.log(data);
 					$("#dynamic_box").empty();
 					$("#dynamic_box").prepend($.templates("#user_info_template").render(data));
-					setTimeout(function() {window.history.replaceState(null, document.title, "/index.html");}, 5000);
+					setTimeout(function() {window.history.replaceState(null, document.title, "/index.html");}, 10000);
 				});
 			}
 		}).always(
 			function() {
-				setTimeout(afterLoadEvents, 2000);
+				setTimeout(afterLoadEvents, 3000);
 			}
 		);
     }
