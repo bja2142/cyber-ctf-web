@@ -348,6 +348,13 @@ $(function() {
 					$("#dynamic_box").empty();
 					$("#dynamic_box").prepend($.templates("#user_info_template").render(data));
 					setTimeout(function() {window.history.replaceState(null, document.title, "/index.html");}, 10000);
+					setTimeout(function() {
+						if(
+							$("#backend_status").text() == "Loading..." || 
+							$("#student_vm_status").text() == "Loading..." ) {
+								location.reload();
+						}
+					}, 15000);
 				});
 			}
 		}).always(
